@@ -16,6 +16,9 @@ FROM laradock/workspace:1.9-71
 
 MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
 
+# Remove Faillog and Lastlog to reduce the size of the final image.
+RUN rm /var/log/lastlog /var/log/faillog
+
 #
 #--------------------------------------------------------------------------
 # Mandatory Software's Installation
@@ -52,7 +55,8 @@ ENV PGID ${PGID}
 
 RUN groupadd -g ${PGID} laradock && \
     useradd -u ${PUID} -g laradock -m laradock && \
-    apt-get update -yqq
+    apt-get update -yqq && \
+    apt-get install -y python2.7
 
 #####################################
 # SOAP:
@@ -80,6 +84,18 @@ RUN if [ ${INSTALL_LDAP} = true ]; then \
     apt-get update -yqq && \
     apt-get install -y libldap2-dev && \
     apt-get install -y php7.1-ldap \
+;fi
+
+#####################################
+# IMAP:
+#####################################
+
+ARG INSTALL_IMAP=false
+ENV INSTALL_IMAP ${INSTALL_IMAP}
+
+RUN if [ ${INSTALL_IMAP} = true ]; then \
+    apt-get update -yqq && \
+    apt-get install -y php7.1-imap \
 ;fi
 
 #####################################
@@ -670,7 +686,8 @@ RUN if [ ${INSTALL_DUSK_DEPS} = true ]; then \
 # Clean up
 USER root
 RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    npm config set python /usr/bin/python2.7
 
 # Set default work directory
 WORKDIR /var/www
