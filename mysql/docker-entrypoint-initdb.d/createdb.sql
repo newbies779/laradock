@@ -22,10 +22,10 @@ GRANT ALL ON `leb2`.* TO 'default'@'%' ;
 CREATE DATABASE IF NOT EXISTS `voyager` COLLATE 'utf8_general_ci' ;
 GRANT ALL ON `voyager`.* TO 'default'@'%' ;
 
-#CREATE DATABASE IF NOT EXISTS `dev_db_2` COLLATE 'utf8_general_ci' ;
-#GRANT ALL ON `dev_db_2`.* TO 'default'@'%' ;
+CREATE DATABASE IF NOT EXISTS `sso` COLLATE 'utf8_general_ci' ;
+GRANT ALL ON `sso`.* TO 'default'@'%' ;
 
-#CREATE DATABASE IF NOT EXISTS `dev_db_3` COLLATE 'utf8_general_ci' ;
-#GRANT ALL ON `dev_db_3`.* TO 'default'@'%' ;
+CREATE DATABASE IF NOT EXISTS `leb2_test` COLLATE 'utf8_general_ci' ;
+GRANT ALL ON `leb2_test`.* TO 'default'@'%' ;
 
 FLUSH PRIVILEGES ;
