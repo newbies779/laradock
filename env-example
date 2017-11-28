@@ -22,6 +22,12 @@ PHP_INTERPRETER=php-fpm
 
 DATA_SAVE_PATH=~/.laradock/data
 
+### Docker compose files ###############################################################################################
+# Select which docker-compose files to include.
+# If using docker-sync. Set the value to: docker-compose.yml:docker-compose.dev.yml:docker-compose.sync.yml
+
+COMPOSE_FILE=docker-compose.yml:docker-compose.dev.yml
+
 ### Docker Host IP #####################################################################################################
 # Enter your Docker Host IP (will be appended to /etc/hosts). Default is `10.0.75.1`
 
@@ -36,6 +42,11 @@ PHP_IDE_CONFIG=serverName=laradock
 # A fix for Windows users, to ensure the application path works.
 
 COMPOSE_CONVERT_WINDOWS_PATHS=1
+
+### Environment ########################################################################################################
+# If you're in China, or you need to change sources, will be set CHANGE_SOURCE to true in .env.
+
+CHANGE_SOURCE=false
 
 ########################################################################################################################
 
@@ -95,7 +106,6 @@ PHP_FPM_INSTALL_EXIF=false
 PHP_FPM_INSTALL_AEROSPIKE=false
 PHP_FPM_INSTALL_MYSQLI=false
 PHP_FPM_INSTALL_PGSQL=false
-PHP_FPM_INSTALL_POSTGRES=false
 PHP_FPM_INSTALL_TOKENIZER=false
 PHP_FPM_INSTALL_INTL=false
 PHP_FPM_INSTALL_GHOSTSCRIPT=false
