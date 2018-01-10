@@ -28,4 +28,7 @@ GRANT ALL ON `sso`.* TO 'default'@'%' ;
 CREATE DATABASE IF NOT EXISTS `leb2_test` COLLATE 'utf8_general_ci' ;
 GRANT ALL ON `leb2_test`.* TO 'default'@'%' ;
 
+CREATE DATABASE IF NOT EXISTS `country` COLLATE 'utf8_general_ci' ;
+GRANT ALL ON `country`.* TO 'default'@'%' ;
+
 FLUSH PRIVILEGES ;
