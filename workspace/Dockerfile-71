@@ -12,7 +12,7 @@
 # Note: Base Image name format {image-tag}-{php-version}
 #
 
-FROM laradock/workspace:1.9-71
+FROM laradock/workspace:2.0-71
 
 MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
 
@@ -54,9 +54,7 @@ ENV PUID ${PUID}
 ENV PGID ${PGID}
 
 RUN groupadd -g ${PGID} laradock && \
-    useradd -u ${PUID} -g laradock -m laradock && \
-    apt-get update -yqq && \
-    apt-get install -y python2.7
+    useradd -u ${PUID} -g laradock -m laradock
 
 #####################################
 # SOAP:
@@ -204,6 +202,8 @@ RUN if [ ${INSTALL_WORKSPACE_SSH} = true ]; then \
         && rm -f /tmp/id_rsa* \
         && chmod 644 /root/.ssh/authorized_keys /root/.ssh/id_rsa.pub \
     && chmod 400 /root/.ssh/id_rsa \
+    && cp -rf /root/.ssh /home/laradock \
+    && chown -R laradock:laradock /home/laradock/.ssh \
 ;fi
 
 #####################################
@@ -221,6 +221,21 @@ RUN if [ ${INSTALL_MONGO} = true ]; then \
 ;fi
 
 #####################################
+# AMQP:
+#####################################
+
+# Check if Mongo needs to be installed
+ARG INSTALL_AMQP=false
+ENV INSTALL_AMQP ${INSTALL_AMQP}
+RUN if [ ${INSTALL_AMQP} = true ]; then \
+    apt-get install librabbitmq-dev -y && \
+    # Install the mongodb extension
+    pecl -q install amqp && \
+    echo "extension=amqp.so" >> /etc/php/7.1/mods-available/amqp.ini && \
+    ln -s /etc/php/7.1/mods-available/amqp.ini /etc/php/7.1/cli/conf.d/30-amqp.ini \
+;fi
+
+#####################################
 # PHP REDIS EXTENSION FOR PHP 7.1
 #####################################
 
@@ -231,6 +246,18 @@ RUN if [ ${INSTALL_PHPREDIS} = true ]; then \
     printf "\n" | pecl -q install -o -f redis && \
     echo "extension=redis.so" >> /etc/php/7.1/mods-available/redis.ini && \
     phpenmod redis \
+;fi
+
+#####################################
+# Swoole EXTENSION FOR PHP 7
+#####################################
+
+ARG INSTALL_SWOOLE=false
+RUN if [ ${INSTALL_SWOOLE} = true ]; then \
+    # Install Php Swoole Extension
+    pecl -q install swoole && \
+    echo "extension=swoole.so" >> /etc/php/7.1/mods-available/swoole.ini && \
+    ln -s /etc/php/7.1/mods-available/swoole.ini /etc/php/7.1/cli/conf.d/20-swoole.ini \
 ;fi
 
 #####################################
@@ -692,8 +719,7 @@ RUN composer global require hirak/prestissimo
 # Clean up
 USER root
 RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    npm config set python /usr/bin/python2.7
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set default work directory
 WORKDIR /var/www
