@@ -1,5 +1,5 @@
-FROM djfarrelly/maildev
+FROM maildev/maildev
 
-MAINTAINER Maxime Hélias <maximehelias16@gmail.com>
+LABEL maintainer="Dan Farrelly"
 
 EXPOSE 80 25

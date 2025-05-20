@@ -1,9 +1,19 @@
-FROM mariadb:latest
+ARG MARIADB_VERSION=latest
+FROM mariadb:${MARIADB_VERSION}
 
-MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
+LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
 
-ADD my.cnf /etc/mysql/conf.d/my.cnf
+#####################################
+# Set Timezone
+#####################################
 
-CMD ["mysqld"]
+ARG TZ=UTC
+ENV TZ ${TZ}
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && chown -R mysql:root /var/lib/mysql/
+COPY my.cnf /etc/mysql/conf.d/my.cnf
+
+RUN chmod -R 644 /etc/mysql/conf.d/my.cnf
+
+CMD ["mariadbd"]
 
 EXPOSE 3306
